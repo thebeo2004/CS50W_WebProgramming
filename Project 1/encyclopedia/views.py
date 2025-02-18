@@ -3,6 +3,7 @@ from django.http import HttpResponseNotFound
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
+import random
 
 from . import util
 
@@ -103,6 +104,16 @@ def edit(request, title):
             "title": title,
             "form": form
         })
+
+def random(request):
+    entries = util.list_entries()
+    
+    import random
+    
+    randomized_number = random.randint(0, len(entries) - 1)
+    
+    return HttpResponseRedirect(reverse('entry', args=[entries[randomized_number]]) )
+    
     
     
     
