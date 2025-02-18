@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseNotFound
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 from . import util
 
@@ -19,3 +21,18 @@ def entry(request, title):
         "title": title,
         "content": content
     })
+    
+def search(request):
+    query = request.GET.get('q')
+    
+    if query in util.list_entries():
+        return HttpResponseRedirect(reverse('entry', args=[query]))
+    else:
+        entries = []
+        for entry in util.list_entries():
+            if query in entry:
+                entries.append(entry)
+        return render(request, "encyclopedia/search_result.html", {
+            "entries": entries
+        })
+    
