@@ -2,8 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django import forms
 
 from . import util
+
+class NewPageForm(forms.Form):
+    title = forms.CharField(label="Title")
+    content = forms.CharField(widget=forms.Textarea(
+        attrs={'rows': 5, 'cols': 10, 'placeholder': "Enter content here"}
+    ), label="Content")
 
 
 def index(request):
@@ -34,5 +41,32 @@ def search(request):
                 entries.append(entry)
         return render(request, "encyclopedia/search_result.html", {
             "entries": entries
+        })
+
+def new_page(request):
+    
+    if (request.method == "POST"):
+        
+        form = NewPageForm(request.POST)
+        
+        if (form.is_valid()):
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            
+            if (title in util.list_entries()):
+                return render(request, "encyclopedia/new_page.html", {
+                    "form": form,
+                    "error": "Page already exists"
+                })
+            else:
+                util.save_entry(title, content)
+                return HttpResponseRedirect(reverse('entry', args=[title]))
+        else:
+            return render(request, "encyclopedia/new_page.html", {
+                "form": form}
+            )
+    else:
+        return render(request, "encyclopedia/new_page.html", {
+        "form": NewPageForm()
         })
     
