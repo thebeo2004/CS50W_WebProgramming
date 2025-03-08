@@ -43,9 +43,40 @@ function load_mailbox(mailbox) {
         <span class="email-subject">${email.subject}</span>
         <span class="email-timestamp">${email.timestamp}</span>
       `;
-      // emailDiv.addEventListener('click', () => load_email(email.id));
+
+      emailDiv.addEventListener('click', () => load_email(email.id));
+
       document.querySelector('#emails-view').appendChild(emailDiv);
     });
   }
   )
+}
+
+function load_email(email_id) {
+
+  document.querySelector('#emails-view').innerHTML = ''
+  fetch(`/emails/${email_id}`)
+  .then(response => response.json())
+  .then(email => {
+    const emailDiv = document.createElement('div');
+    const userEmail = document.getElementById('emails-view').dataset.useremail;
+    emailDiv.className = 'email_view';
+    emailDiv.innerHTML = `
+      <div><strong>From:</strong> ${email.sender}</div>
+      <div><strong>To:</strong> ${userEmail}</div>
+      <div><strong>Subject:</strong> ${email.subject}</div>
+      <div><strong>Timestamp:</strong> ${email.timestamp}</div>
+      <hr>
+      <div><p>${email.body}</p></div>
+    `;
+
+    document.querySelector('#emails-view').appendChild(emailDiv);
+  })
+
+  fetch(`/emails/${email_id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      read: true
+    })
+  })
 }
