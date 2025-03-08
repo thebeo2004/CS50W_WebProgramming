@@ -44,7 +44,7 @@ function load_mailbox(mailbox) {
         <span class="email-timestamp">${email.timestamp}</span>
       `;
 
-      emailDiv.addEventListener('click', () => load_email(email.id));
+      emailDiv.addEventListener('click', () => load_email(email.id, mailbox, email.archived));
 
       document.querySelector('#emails-view').appendChild(emailDiv);
     });
@@ -52,9 +52,10 @@ function load_mailbox(mailbox) {
   )
 }
 
-function load_email(email_id) {
+function load_email(email_id, mailbox, is_archived) {
 
   document.querySelector('#emails-view').innerHTML = ''
+
   fetch(`/emails/${email_id}`)
   .then(response => response.json())
   .then(email => {
@@ -66,11 +67,49 @@ function load_email(email_id) {
       <div><strong>To:</strong> ${userEmail}</div>
       <div><strong>Subject:</strong> ${email.subject}</div>
       <div><strong>Timestamp:</strong> ${email.timestamp}</div>
+      <div class="button-group">
+        <button class="reply-btn">Reply</button>
+        <button class="archive-btn">Archive</button>
+      </div>
       <hr>
       <div><p>${email.body}</p></div>
     `;
 
     document.querySelector('#emails-view').appendChild(emailDiv);
+
+    let archiveBtn = document.querySelector('.archive-btn');
+
+    if (mailbox === 'sent' || mailbox === 'inbox') {
+      archiveBtn.textContent = 'Archive';
+
+      document.querySelector('.archive-btn').addEventListener('click', () => {
+        fetch(`/emails/${email_id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            archived: true
+          })
+        })
+        .then(() => load_mailbox('inbox'))
+      })
+
+      if (is_archived) {
+        archiveBtn.style.display = 'none';
+      }
+    } else if (mailbox === 'archive') {
+      archiveBtn.textContent = 'Unarchive';
+
+      document.querySelector('.archive-btn').addEventListener('click', () => {
+        fetch(`/emails/${email_id}`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            archived: false
+          })
+        })
+        .then(() => load_mailbox('archive'))
+      })
+    }
+
+
   })
 
   fetch(`/emails/${email_id}`, {

@@ -51,3 +51,40 @@ body {
     font-size: 0.9em;
     color: #666;
 }
+
+.button-group {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các nút */
+}
+
+.reply-btn, .archive-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.reply-btn {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.reply-btn:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+
+.archive-btn {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.archive-btn:hover {
+    background-color: #5a6268; /* Màu xám đậm hơn khi hover */
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+}
