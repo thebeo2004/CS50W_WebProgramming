@@ -14,9 +14,9 @@
     <div id="emails-view">
     </div>
 
-    <div id="compose-view">
+    <div id="compose-view"">
         <h3>New Email</h3>
-        <form id="compose-form"">
+        <form id="compose-form" method="post" action="{% url 'compose' %}">
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" class="btn btn-primary"/>
