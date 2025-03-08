@@ -41,7 +41,7 @@ function load_mailbox(mailbox) {
       emailDiv.innerHTML = `
         <span class="email-sender">${email.sender}</span>
         <span class="email-subject">${email.subject}</span>
-        <span class="email-timestamp">${email.timestamp}<span>
+        <span class="email-timestamp">${email.timestamp}</span>
       `;
       // emailDiv.addEventListener('click', () => load_email(email.id));
       document.querySelector('#emails-view').appendChild(emailDiv);
