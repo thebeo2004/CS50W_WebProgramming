@@ -8,13 +8,15 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import User, Email
-
+from .forms import EmailComposeForm
 
 def index(request):
 
     # Authenticated users view their inbox
     if request.user.is_authenticated:
-        return render(request, "mail/inbox.html")
+        return render(request, "mail/inbox.html", {
+            "form": EmailComposeForm(initial={'sender': request.user.email}),
+        })
 
     # Everyone else is prompted to sign in
     else:
